@@ -23,6 +23,10 @@ class Global:
 	use_trigger    = False
 	tweet_trigger = 'tweet'
 
+	FB_API_VERSION="2.3"
+	FB_ACCESS_TOKEN=''
+	FB_PROFILE_ID=""
+
 
 class Auto:
 	tweet_format = '$$POST_TITLE$$ $$POST_URL$$ #blog'

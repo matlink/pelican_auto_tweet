@@ -37,10 +37,6 @@ import libpelican
 TWITTER_API = None
 BITLY_API   = None
 BLOG        = None
-FB_API_VERSION="2.3"
-FB_ACCESS_TOKEN=''
-FB_PROFILE_ID="337996262932418"
-use_custom_git_command = True
 #
 # From http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
 #
@@ -212,7 +208,7 @@ for filename in files:
 
 				# Post tweet
 				try:
-					twitter_send(tweet_text)
+					twitter_send(tweet_text+hash_tags)
 					facebook_send(title+hash_tags,url,"","",img)
 				except twitter.TwitterError as err:
 					print "FAIL:", err
