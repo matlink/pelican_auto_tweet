@@ -23,10 +23,11 @@ import sys
 import commands
 import unicodedata
 import os
+import facebook
 from HTMLParser import HTMLParser
 
 # From https://github.com/bitly/bitly-api-python
-import bitly_api as bitlyapi
+# import bitly_api as bitlyapi
 # From http://code.google.com/p/python-twitter/
 import twitter
 
@@ -36,7 +37,9 @@ import libpelican
 TWITTER_API = None
 BITLY_API   = None
 BLOG        = None
-
+FB_API_VERSION="2.3"
+FB_ACCESS_TOKEN='CAAEGrJ8sPAQBAKhsY8XegxtlvF9ugAKB2NpbJxkXTd78u3rP0iRgMUBbTertyV3L7xy814C5uaHjIN6PQfw1MWQrsXCSEEyVuTfWX3zoI9TS2uAS4IfXKii4MMrtjn4mzouPJ1citnDCWYfpoX6oH2Is7RsGnAfuSPjQ73BZAp5qp4J5W55GSbZAXzn3ZBzZAfCJZBOWSR8rHZAEL9UHInU0hxRBZB5z9wZD'
+FB_PROFILE_ID="337996262932418"
 use_custom_git_command = True
 #
 # From http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
@@ -69,6 +72,17 @@ def twitter_send(text):
 		twitter_connect()
 	TWITTER_API.PostUpdate(text)
 	print(text)
+
+def facebook_send(name,link,caption,description,picture):
+	graphe = facebook.GraphAPI(access_token=FB_ACCESS_TOKEN,version=FB_API_VERSION)
+	attachment =  {
+	    'name': name,
+	    'link': link,
+	    'caption': caption,
+	    'description': description,
+	    'picture': picture
+	}
+	graphe.put_wall_post(message=name,attachment=attachment,profile_id=FB_PROFILE_ID)
 
 def publish_blog():
 	os.chdir(BLOG.get_base_directory())
@@ -139,7 +153,7 @@ else:
 if (conf.Global.always_publish == True) or (conf.Global.always_publish == False and log_message.startswith('[POST]')):
 	f = []
 	for x in files:
-		name = os.path.basename(x)
+		name = "2015/"+os.path.basename(x)
 		b,ext = os.path.splitext(name)
 		if ext in ('.md', '.rst'):
 			f.append(name)
@@ -156,7 +170,7 @@ if (conf.Global.always_publish == True) or (conf.Global.always_publish == False 
 		if response.upper() == "N":
 			sys.exit(2)
 
-	publish_blog()
+	#publish_blog()
 
 files = f
 # A new tweet is sent for each committed article.
@@ -175,6 +189,10 @@ for filename in files:
 			if (conf.Global.use_trigger and TWEET_TRIGGER in triggers) or (not conf.Global.use_trigger):
 				title = BLOG.get_post_title(post_filename)
 				url   = BLOG.get_post_url(post_filename)
+				img	  = BLOG.get_site_base_url()+"images/"+BLOG.get_post_image(post_filename)
+				tags  = BLOG.get_post_tags(post_filename)
+				hash_tags = ["#%s"%tag for tag in tags]
+				hash_tags_str = ' '.join(map(str, hash_tags))
 
 				# Shorten the link if Bitly is used.
 				if BITLY_API:
@@ -195,6 +213,7 @@ for filename in files:
 				# Post tweet
 				try:
 					twitter_send(tweet_text)
+					facebook_send(title+hash_tags,url,"","",img)
 				except twitter.TwitterError as err:
 					print "FAIL:", err
 

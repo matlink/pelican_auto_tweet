@@ -286,6 +286,16 @@ class PelicanBlog:
 		'''
 		return self._get_post_info(post_filename, "Status")
 
+	def get_post_image(self,post_filename):
+		'''Get the image of a blog post.
+			Args:
+			  post_filename:
+			    The filename of the article.
+
+			Returns:
+			  The image of the article, or a blank string.'''
+		return self._get_post_info(post_filename, "Image")
+
 	def is_draft(self, post_filename):
 		'''Returns the 'draft' status of a blog post.
 		If the uppercase status of the blog post is 'DRAFT', it is considered
