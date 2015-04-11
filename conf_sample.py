@@ -58,6 +58,11 @@ class Twitter:
 	access_token_key    = ''
 	access_token_secret = ''
 
+class Facebook:
+	FB_API_VERSION="2.3"
+	FB_ACCESS_TOKEN=''
+	FB_PROFILE_ID=''
+
 
 class Bitly:
 	user    = ""

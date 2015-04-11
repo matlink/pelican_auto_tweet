@@ -183,7 +183,8 @@ class PelicanBlog:
 		if date is None or date == "":
 			return None
 		else:
-			return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+			date = date.split(" ")[0]
+			return datetime.datetime.strptime(date, "%Y-%m-%d")
 
 	def get_post_author(self, post_filename):
 		'''Get the author of a blog post.
